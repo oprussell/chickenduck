@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>chickenduck.art — doodles, stickers &amp; felted friends</title>
+<meta name="description" content="Hand-doodled art, stickers, and needle-felted little monsters, eyeballs, and snails.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
+
+<style>
+
+/* ============================================================
+   DESIGN TOKENS
+
+   Color — sketchbook cream stage with 5 saturated, named accents
+     --cream  #FFF8EC  page background, warm paper
+     --paper  #FFFDF6  card surfaces
+     --ink    #2A2622  linework / text — warm charcoal, not pure black
+     --yolk   #FFC93C  egg-yolk yellow
+     --pond   #2EC4B6  duck-pond teal
+     --comb   #FF6B6B  rooster-comb coral
+     --yarn   #9B7EDE  felting-wool violet
+     --shell  #FFB27B  snail-shell orange
+
+   Type
+     display — 'Seblak' (handwritten marker, per brief), falls back to
+               'Caveat' until the real font file is installed — see note
+               at the bottom of this file.
+     body    — 'Plus Jakarta Sans'
+
+   Layout
+     Icon-only nav pinned to the left edge on desktop, drops to a
+     bottom bar on narrow screens. Content scrolls in one column at
+     a comfortable reading width, sections alternate cream/paper so
+     the page keeps a "page in a sketchbook" rhythm.
+
+   Signature
+     Sticker language: thick ink outlines + flat, unblurred offset
+     shadows on every card/button/badge, like something cut out and
+     stuck down. Every big content block (hero art, product tiles,
+     avatar) is a dashed "wiggle zone" — explicitly reserved, unstyled
+     space for the line-boil doodle animations to drop into later.
+   ============================================================ */
+
+  @font-face {
+    font-family: 'Seblak';
+    src: url('fonts/Seblak.woff2') format('woff2'),
+         url('fonts/Seblak.ttf') format('truetype');
+    font-display: swap;
+  }
+
+  :root{
+    --cream:#FFF8EC;
+    --paper:#FFFDF6;
+    --ink:#2A2622;
+    --yolk:#FFC93C;
+    --pond:#2EC4B6;
+    --comb:#FF6B6B;
+    --yarn:#9B7EDE;
+    --shell:#FFB27B;
+
+    --font-display:'Seblak','Caveat',cursive;
+    --font-body:'Plus Jakarta Sans',system-ui,sans-serif;
+
+    --nav-w:88px;
+    --nav-w-mobile:64px;
+    --shadow-ink: 5px 5px 0 var(--ink);
+    --shadow-ink-sm: 3px 3px 0 var(--ink);
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *,*::before,*::after{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  }
+
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-size:16px;
+    line-height:1.5;
+  }
+
+  h1,h2,h3{
+    font-family:var(--font-display);
+    font-weight:400;
+    line-height:1.05;
+    margin:0;
+  }
+
+  a{ color:inherit; }
+
+  .skip-link{
+    position:absolute; left:-999px; top:0;
+    background:var(--ink); color:var(--cream);
+    padding:.75rem 1.25rem; border-radius:0 0 10px 0; z-index:200;
+  }
+  .skip-link:focus{ left:0; }
+
+  img,svg{ display:block; max-width:100%; }
+
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:.5em;
+    font-family:var(--font-body); font-weight:700;
+    font-size:.8rem; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--ink); opacity:.65;
+    margin-bottom:.9rem;
+  }
+  .eyebrow::before{
+    content:""; width:.5rem; height:.5rem; border-radius:50%;
+    background:var(--comb); flex:none;
+  }
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-flex; align-items:center; gap:.5rem;
+    font-family:var(--font-body); font-weight:700; font-size:1rem;
+    padding:.85rem 1.5rem; border-radius:999px;
+    border:2.5px solid var(--ink);
+    text-decoration:none; cursor:pointer;
+    box-shadow:var(--shadow-ink-sm);
+    transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn:hover{ transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--ink); }
+  .btn:active{ transform:translate(1px,1px); box-shadow:1px 1px 0 var(--ink); }
+  .btn-primary{ background:var(--ink); color:var(--cream); }
+  .btn-primary:hover{ background:var(--pond); color:var(--ink); }
+  .btn-ghost{ background:transparent; color:var(--ink); }
+  .btn-ghost:hover{ background:var(--yolk); }
+
+  /* ---------- left / bottom nav ---------- */
+  .side-nav{
+    position:fixed; top:0; left:0; height:100vh; width:var(--nav-w);
+    background:var(--ink); z-index:100;
+    display:flex; flex-direction:column; align-items:center;
+    padding:1.1rem 0 1.4rem;
+  }
+  .nav-logo{
+    width:46px; height:46px; margin-bottom:1.6rem; flex:none;
+    color:var(--cream);
+  }
+  .nav-list{
+    list-style:none; margin:0; padding:0;
+    display:flex; flex-direction:column; gap:.65rem;
+    flex:1;
+    align-items:center;
+    justify-content:center;
+  }
+  .nav-link{
+    position:relative;
+    display:flex; align-items:center; justify-content:center;
+    width:48px; height:48px; border-radius:16px;
+    color:var(--cream); text-decoration:none;
+    transition:transform .18s ease;
+  }
+  .nav-link svg{ width:24px; height:24px; position:relative; z-index:2; }
+  .nav-link .blob{
+    position:absolute; inset:0; border-radius:16px;
+    transform:scale(.85) rotate(0deg);
+    opacity:0; transition:opacity .18s ease, transform .18s ease;
+    box-shadow:3px 3px 0 var(--cream);
+  }
+  .nav-link:hover, .nav-link:focus-visible, .nav-link.active{ transform:translateY(-2px) rotate(-3deg); }
+  .nav-link:hover .blob, .nav-link:focus-visible .blob, .nav-link.active .blob{
+    opacity:1; transform:scale(1) rotate(-4deg);
+  }
+  .nav-list li:nth-child(1) .blob{ background:var(--comb); }
+  .nav-list li:nth-child(2) .blob{ background:var(--yolk); }
+  .nav-list li:nth-child(3) .blob{ background:var(--pond); }
+  .nav-list li:nth-child(4) .blob{ background:var(--yarn); }
+  .nav-list li:nth-child(5) .blob{ background:var(--shell); }
+  .nav-tooltip{
+    position:absolute; left:64px; top:50%; transform:translateY(-50%) translateX(-6px);
+    background:var(--cream); color:var(--ink); font-weight:700; font-size:.82rem;
+    padding:.4rem .7rem; border-radius:8px; white-space:nowrap;
+    border:2px solid var(--ink); box-shadow:3px 3px 0 var(--ink);
+    opacity:0; pointer-events:none; transition:opacity .15s ease, transform .15s ease;
+    z-index:50;
+  }
+  .nav-link:hover .nav-tooltip, .nav-link:focus-visible .nav-tooltip{
+    opacity:1; transform:translateY(-50%) translateX(0);
+  }
+  .nav-shop{
+    margin-top:.9rem; flex:none;
+  }
+  .nav-shop .blob{ background:var(--pond); }
+
+  main{ margin-left:var(--nav-w); }
+
+  /* ---------- decorative blobs (ambient color, not the doodle animations) ---------- */
+  .blob-bg{
+    position:absolute; border-radius:50%; filter:blur(0px);
+    opacity:.55; z-index:0;
+    animation:float 9s ease-in-out infinite;
+  }
+  @keyframes float{
+    0%,100%{ transform:translateY(0) rotate(0deg); }
+    50%{ transform:translateY(-16px) rotate(6deg); }
+  }
+
+  /* ---------- wiggle zone (reserved animation space) ---------- */
+  .wiggle-zone{
+    position:relative;
+    border:2.5px dashed var(--ink);
+    border-radius:22px;
+    background:repeating-linear-gradient(135deg, rgba(42,38,34,.035) 0 10px, transparent 10px 20px);
+    display:flex; align-items:center; justify-content:center;
+    text-align:center;
+  }
+  .wiggle-zone .wiggle-label{
+    font-size:.8rem; font-weight:600; opacity:.5; font-style:italic;
+    padding:0 1rem;
+  }
+
+  /* ---------- section shells ---------- */
+  section{ padding:5.5rem 1.5rem; position:relative; overflow:hidden; }
+  .section-inner{ max-width:1080px; margin:0 auto; position:relative; z-index:1; }
+  .section-head{ max-width:640px; margin-bottom:3rem; }
+  .section-head h2{ font-size:clamp(2.2rem, 4vw, 3rem); margin-bottom:.6rem; }
+  .section-head p{ font-size:1.05rem; opacity:.8; margin:0; }
+
+  /* ---------- hero ---------- */
+  .hero{ padding-top:4.5rem; }
+  .hero .blob-bg:nth-child(1){ width:220px; height:220px; background:var(--yolk); top:8%; right:8%; }
+  .hero .blob-bg:nth-child(2){ width:140px; height:140px; background:var(--pond); bottom:6%; left:2%; animation-delay:1.5s; }
+  .hero-grid{
+    display:grid; grid-template-columns:1.1fr 1fr; gap:3rem; align-items:center;
+  }
+  .hero h1{
+    font-size:clamp(3.4rem, 8vw, 6rem);
+    display:flex; flex-wrap:wrap; align-items:baseline; gap:.15em;
+  }
+  .hero h1 .c1{ color:var(--comb); }
+  .hero h1 .c2{ color:var(--pond); }
+  .hero h1 .ext{ font-family:var(--font-body); font-size:.28em; font-weight:800; opacity:.55; align-self:flex-start; margin-top:.4em;}
+  .hero-tagline{
+    font-family:var(--font-display); font-weight:400;
+    font-size:clamp(1.3rem,2.4vw,1.8rem);
+    margin:1rem 0 1.1rem;
+  }
+  .hero-copy{ font-size:1.08rem; max-width:46ch; opacity:.85; margin-bottom:2rem; }
+  .hero-ctas{ display:flex; flex-wrap:wrap; gap:1rem; }
+  .hero-art .wiggle-zone{ aspect-ratio:1/1; }
+  .hero-art .wiggle-zone svg{ width:46%; opacity:.9; }
+
+  /* ---------- product grid (doodles / felted) ---------- */
+  .product-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1.75rem;
+  }
+  .product-card{
+    background:var(--paper); border:2.5px solid var(--ink); border-radius:20px;
+    box-shadow:var(--shadow-ink);
+    padding:1.1rem; display:flex; flex-direction:column; gap:.9rem;
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .product-card:hover{ transform:translate(-3px,-3px); box-shadow:8px 8px 0 var(--ink); }
+  .product-card .wiggle-zone{ aspect-ratio:4/3; border-style:dashed; }
+  .card-tag{
+    align-self:flex-start;
+    font-size:.72rem; font-weight:800; letter-spacing:.04em; text-transform:uppercase;
+    padding:.25rem .6rem; border-radius:999px; border:2px solid var(--ink);
+  }
+  .product-card:nth-child(1) .card-tag{ background:var(--yolk); }
+  .product-card:nth-child(2) .card-tag{ background:var(--comb); }
+  .product-card:nth-child(3) .card-tag{ background:var(--pond); }
+  .product-card h3{ font-family:var(--font-body); font-size:1.15rem; font-weight:800; margin:0; }
+  .card-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:auto; }
+  .card-price{ font-weight:800; opacity:.75; }
+  .section-cta{ margin-top:2.75rem; }
+
+  .section-doodles{ background:var(--paper); }
+  .section-doodles .blob-bg:nth-child(3){ width:170px; height:170px; background:var(--shell); top:0%; left:-4%; }
+
+  .section-felted .blob-bg:nth-child(3){ width:190px; height:190px; background:var(--yarn); bottom:-3%; right:-3%; opacity:.4; }
+  .section-felted .product-card:nth-child(1) .card-tag{ background:var(--yarn); }
+  .section-felted .product-card:nth-child(2) .card-tag{ background:var(--shell); }
+  .section-felted .product-card:nth-child(3) .card-tag{ background:var(--yolk); }
+
+  /* ---------- about ---------- */
+  .section-about{ background:var(--paper); }
+  .about-grid{ display:grid; grid-template-columns:200px 1fr; gap:2.5rem; align-items:center; }
+  .about-avatar .wiggle-zone{ aspect-ratio:1/1; border-radius:50%; }
+  .about-avatar .wiggle-zone svg{ width:52%; opacity:.85; }
+  .about-copy p{ font-size:1.05rem; opacity:.85; max-width:56ch; }
+
+  /* ---------- footer / shop CTA ---------- */
+  .footer-cta{
+    background:var(--ink); color:var(--cream);
+    text-align:center;
+  }
+  .footer-cta h2{ color:var(--cream); font-size:clamp(2.2rem,5vw,3.4rem); margin-bottom:.7rem; }
+  .footer-cta p{ opacity:.75; max-width:44ch; margin:0 auto 2rem; }
+  .footer-cta .btn-primary{ background:var(--yolk); color:var(--ink); border-color:var(--cream); box-shadow:5px 5px 0 var(--cream); }
+  .footer-cta .btn-primary:hover{ background:var(--comb); }
+
+  .site-footer{
+    background:var(--ink); color:var(--cream);
+    padding:2.5rem 1.5rem 6.5rem;
+    display:flex; flex-wrap:wrap; gap:1.25rem;
+    align-items:center; justify-content:space-between;
+  }
+  .footer-social{ display:flex; gap:.75rem; }
+  .footer-social a{
+    width:40px; height:40px; border-radius:50%; border:2px solid var(--cream);
+    display:flex; align-items:center; justify-content:center; text-decoration:none;
+    transition:background .15s ease, transform .15s ease;
+  }
+  .footer-social a:hover{ background:var(--pond); transform:translateY(-2px); }
+  .footer-social svg{ width:18px; height:18px; }
+  .footer-copy{ font-size:.85rem; opacity:.6; }
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal{ opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
+  .reveal.is-visible{ opacity:1; transform:translateY(0); }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 900px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .hero-art{ order:-1; max-width:320px; margin:0 auto; }
+    .product-grid{ grid-template-columns:1fr 1fr; }
+    .about-grid{ grid-template-columns:120px 1fr; }
+  }
+
+  @media (max-width: 620px){
+    :root{ --nav-w:0px; }
+    main{ margin-left:0; }
+    .side-nav{
+      top:auto; bottom:0; left:0; width:100%; height:var(--nav-w-mobile);
+      flex-direction:row; padding:.5rem .75rem;
+    }
+    .nav-logo{ display:none; }
+    .nav-list{ flex-direction:row; width:100%; justify-content:space-around; gap:.25rem; }
+    .nav-shop{ margin-top:0; }
+    .nav-tooltip{ display:none; }
+    body{ padding-bottom:var(--nav-w-mobile); }
+    section{ padding:3.5rem 1.25rem; }
+    .product-grid{ grid-template-columns:1fr; }
+    .about-grid{ grid-template-columns:1fr; text-align:center; }
+    .about-avatar{ max-width:160px; margin:0 auto; }
+    .about-copy p{ margin-left:auto; margin-right:auto; }
+    .hero-ctas{ justify-content:center; }
+  }
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">skip to content</a>
+
+<nav class="side-nav" aria-label="Main">
+  <a href="#home" class="nav-logo" aria-label="chickenduck.art home">
+    <!-- mascot logomark -->
+    <svg viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M11 26c-1-8 4.5-16 12.5-16 5 0 7.5 2.3 7.5 4.8 0 1.4-1 2.2-1 2.2 3 .6 5 2.8 5 5.4 0 5-5 9.6-13 9.6S11 32 11 26z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M17.5 10.5c-1-1.6-.5-3 .5-3.3M21 8.7c-.3-1.8.6-3 1.8-3M25 9c.4-1.7 1.8-2.6 2.9-2.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="19.5" cy="24" r="1.4" fill="currentColor"/>
+      <path d="M31 26.5c2 .2 4-1 4.3-2.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </a>
+
+  <ul class="nav-list">
+    <li>
+      <a href="#home" class="nav-link active" aria-label="Home">
+        <span class="blob"></span>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 11.5 12 4.5l8 7"/>
+          <path d="M6 10.3V19a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8.7"/>
+          <path d="M12 16.6c-1.7-1.5-2.8-2.4-2.8-3.7 0-.9.7-1.5 1.5-1.5.7 0 1.1.4 1.3.9.2-.5.6-.9 1.3-.9.8 0 1.5.6 1.5 1.5 0 1.3-1.1 2.2-2.8 3.7z" fill="currentColor" stroke="none"/>
+        </svg>
+        <span class="nav-tooltip">Home</span>
+      </a>
+    </li>
+    <li>
+      <a href="doodles.html" class="nav-link" aria-label="Doodles">
+        <span class="blob"></span>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 16.5c1.6-3.6 3.4 3.4 5.2.2 1.8-3.2 3.4-4.8 5-1.6 1.4 2.8 3.3 1 4.3-.6"/>
+          <path d="M17.5 5v3.2M16 6.6h3M19.6 5l-1.8 1.8M20 5l-1.8 1.8" transform="translate(-1,0)"/>
+        </svg>
+        <span class="nav-tooltip">Doodles</span>
+      </a>
+    </li>
+    <li>
+      <a href="stickers.html" class="nav-link" aria-label="Stickers">
+        <span class="blob"></span>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 6.8A1.8 1.8 0 0 1 6.8 5h7.7c.5 0 1 .2 1.3.6l3.6 3.6c.4.4.6.8.6 1.3v7.7A1.8 1.8 0 0 1 18.2 20H6.8A1.8 1.8 0 0 1 5 18.2z"/>
+          <path d="M15 5.4V9a1.6 1.6 0 0 0 1.6 1.6h3.6"/>
+        </svg>
+        <span class="nav-tooltip">Stickers</span>
+      </a>
+    </li>
+    <li>
+      <a href="felted.html" class="nav-link" aria-label="Felted friends">
+        <span class="blob"></span>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="10.5" cy="14" r="6"/>
+          <path d="M5.3 11.4c3 1.2 7.4 1.2 10 2.6M5.6 17c3-1.2 7.1-1.2 9.8-3.2M8 8.3c1.6 2.8 1.6 8.8 0 11.6"/>
+          <path d="M15 8.6l4.6-3.4M18.4 4l1.2 1.3"/>
+        </svg>
+        <span class="nav-tooltip">Felted friends</span>
+      </a>
+    </li>
+    <li>
+      <a href="about.html" class="nav-link" aria-label="About">
+        <span class="blob"></span>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="13.5" r="7"/>
+          <path d="M9 5.3q1-2 3-1M12 4q1.6-1.4 3 .1M15.2 4.9q1.1-1 2.4-.2" stroke-linecap="round"/>
+          <circle cx="9.6" cy="12.2" r="0.9" fill="currentColor" stroke="none"/>
+          <circle cx="14.4" cy="12.2" r="0.9" fill="currentColor" stroke="none"/>
+          <path d="M10.6 15.6q1.4 1.3 2.8 0" />
+        </svg>
+        <span class="nav-tooltip">About</span>
+      </a>
+    </li>
+  </ul>
+
+  <a href="https://shop.chickenduck.art" target="_blank" rel="noopener" class="nav-link nav-shop" aria-label="Shop (opens shop.chickenduck.art)">
+    <span class="blob"></span>
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6.5 8.2h11l-.9 11.2a1.6 1.6 0 0 1-1.6 1.5H9a1.6 1.6 0 0 1-1.6-1.5z"/>
+      <path d="M9.2 8V6.6a2.8 2.8 0 0 1 5.6 0V8"/>
+    </svg>
+    <span class="nav-tooltip">Shop ↗</span>
+  </a>
+</nav>
+
+<main id="main">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero" id="home">
+    <span class="blob-bg" aria-hidden="true"></span>
+    <span class="blob-bg" aria-hidden="true"></span>
+    <div class="section-inner hero-grid">
+      <div class="hero-copy-col reveal">
+        <p class="eyebrow">hand-doodled &amp; hand-felted</p>
+        <h1><span class="c1">chicken</span><span class="c2">duck</span><span class="ext">.art</span></h1>
+        <p class="hero-tagline">half chicken, half duck, entirely doodled.</p>
+        <p class="hero-copy">I draw wobbly little creatures and turn them into framed prints and stickers, plus a growing shelf of needle-felted monsters, eyeballs, and tiny snails you can actually hold.</p>
+        <div class="hero-ctas">
+          <a href="#doodles" class="btn btn-primary">see the doodles</a>
+          <a href="https://shop.chickenduck.art" target="_blank" rel="noopener" class="btn btn-ghost">visit the shop ↗</a>
+        </div>
+      </div>
+      <div class="hero-art reveal">
+        <div class="wiggle-zone">
+          <svg viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:var(--ink)">
+            <path d="M11 26c-1-8 4.5-16 12.5-16 5 0 7.5 2.3 7.5 4.8 0 1.4-1 2.2-1 2.2 3 .6 5 2.8 5 5.4 0 5-5 9.6-13 9.6S11 32 11 26z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            <circle cx="19.5" cy="24" r="1.4" fill="currentColor"/>
+          </svg>
+          <span class="wiggle-label">( a doodle wiggles here )</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DOODLES ================= -->
+  <section class="section-doodles" id="doodles">
+    <span class="blob-bg" aria-hidden="true"></span>
+    <div class="section-inner">
+      <div class="section-head reveal">
+        <p class="eyebrow">flat &amp; framed</p>
+        <h2>the doodles</h2>
+        <p>Loose ink sketches, cleaned up just enough to hang on a wall or slap on a laptop. Every line wobbles on purpose.</p>
+      </div>
+      <div class="product-grid">
+        <article class="product-card reveal">
+          <div class="wiggle-zone"><span class="wiggle-label">(animated doodle)</span></div>
+          <span class="card-tag">framed print</span>
+          <h3>little chaos</h3>
+          <div class="card-foot"><span class="card-price">from $28</span></div>
+        </article>
+        <article class="product-card reveal">
+          <div class="wiggle-zone"><span class="wiggle-label">(animated doodle)</span></div>
+          <span class="card-tag">sticker pack</span>
+          <h3>everyday weirdos</h3>
+          <div class="card-foot"><span class="card-price">from $6</span></div>
+        </article>
+        <article class="product-card reveal">
+          <div class="wiggle-zone"><span class="wiggle-label">(animated doodle)</span></div>
+          <span class="card-tag">framed print</span>
+          <h3>one-line wonders</h3>
+          <div class="card-foot"><span class="card-price">from $32</span></div>
+        </article>
+      </div>
+      <a href="doodles.html" class="btn btn-ghost section-cta">see all the doodles →</a>
+    </div>
+  </section>
+
+  <!-- ================= FELTED ================= -->
+  <section class="section-felted" id="felted">
+    <span class="blob-bg" aria-hidden="true"></span>
+    <div class="section-inner">
+      <div class="section-head reveal">
+        <p class="eyebrow">made one poke at a time</p>
+        <h2>the felted friends</h2>
+        <p>Wool, a very sharp barbed needle, and way too much patience. Each one is one-of-a-kind and a little bit unhinged.</p>
+      </div>
+      <div class="product-grid">
+        <article class="product-card reveal">
+          <div class="wiggle-zone"><span class="wiggle-label">(animated doodle)</span></div>
+          <span class="card-tag">one of a kind</span>
+          <h3>little monster</h3>
+          <div class="card-foot"><span class="card-price">from $34</span></div>
+        </article>
+        <article class="product-card reveal">
+          <div class="wiggle-zone"><span class="wiggle-label">(animated doodle)</span></div>
+          <span class="card-tag">creepy-cute</span>
+          <h3>eyeball buddy</h3>
+          <div class="card-foot"><span class="card-price">from $22</span></div>
+        </article>
+        <article class="product-card reveal">
+          <div class="wiggle-zone"><span class="wiggle-label">(animated doodle)</span></div>
+          <span class="card-tag">pocket-sized</span>
+          <h3>tiny snail</h3>
+          <div class="card-foot"><span class="card-price">from $18</span></div>
+        </article>
+      </div>
+      <a href="felted.html" class="btn btn-ghost section-cta">meet the whole gang →</a>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT ================= -->
+  <section class="section-about" id="about">
+    <div class="section-inner about-grid">
+      <div class="about-avatar reveal">
+        <div class="wiggle-zone">
+          <span class="wiggle-label">(photo or avatar)</span>
+        </div>
+      </div>
+      <div class="about-copy reveal">
+        <p class="eyebrow">who's behind the beak</p>
+        <h2 style="font-size:clamp(2rem,3.6vw,2.6rem); margin-bottom:.8rem;">hi, i draw the chickens and felt the ducks</h2>
+        <p>chickenduck started as a doodle in the margin of a notebook and got a little out of hand. now it's framed prints, sticker sheets, and a shelf of needle-felted creatures that judge me while I work. everything's made by hand, in small batches, with extra wobble.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER CTA + SITE FOOTER ================= -->
+  <section class="footer-cta">
+    <div class="section-inner reveal">
+      <h2>take one home</h2>
+      <p>Prints, stickers, and felted friends are all hanging out at the shop.</p>
+      <a href="https://shop.chickenduck.art" target="_blank" rel="noopener" class="btn btn-primary">shop chickenduck ↗</a>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <p class="footer-copy">© 2026 chickenduck.art — doodled and felted by hand.</p>
+    <div class="footer-social">
+      <a href="#" aria-label="Instagram" title="Add your Instagram link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.3"/><circle cx="16.6" cy="7.4" r="0.6" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <a href="mailto:hello@chickenduck.art" aria-label="Email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.5" width="16" height="13" rx="2.2"/><path d="M4.5 6.5 12 12l7.5-5.5"/></svg>
+      </a>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  // Reveal-on-scroll — skipped for reduced-motion users, who see everything already in place.
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!prefersReduced && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('is-visible'); });
+  }
+
+  // Active nav state on scroll (desktop sections)
+  var sections = ['home','doodles','felted','about'].map(function(id){ return document.getElementById(id); });
+  var navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+  if ('IntersectionObserver' in window) {
+    var navIo = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) {
+          var id = entry.target.id;
+          navLinks.forEach(function(link){
+            link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+          });
+        }
+      });
+    }, { threshold: 0.5 });
+    sections.forEach(function(s){ if (s) navIo.observe(s); });
+  }
+</script>
+
+</body>
+</html>
