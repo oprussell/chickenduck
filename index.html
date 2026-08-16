@@ -14,337 +14,1035 @@
 
 /* ============================================================
    DESIGN TOKENS
-
-   Color — sketchbook cream stage with 5 saturated, named accents
-     --cream  #FFF8EC  page background, warm paper
-     --paper  #FFFDF6  card surfaces
-     --ink    #2A2622  linework / text — warm charcoal, not pure black
-     --yolk   #FFC93C  egg-yolk yellow
-     --pond   #2EC4B6  duck-pond teal
-     --comb   #FF6B6B  rooster-comb coral
-     --yarn   #9B7EDE  felting-wool violet
-     --shell  #FFB27B  snail-shell orange
-
-   Type
-     display — 'Seblak' (handwritten marker, per brief), falls back to
-               'Caveat' until the real font file is installed — see note
-               at the bottom of this file.
-     body    — 'Plus Jakarta Sans'
-
-   Layout
-     Icon-only nav pinned to the left edge on desktop, drops to a
-     bottom bar on narrow screens. Content scrolls in one column at
-     a comfortable reading width, sections alternate cream/paper so
-     the page keeps a "page in a sketchbook" rhythm.
-
-   Signature
-     Sticker language: thick ink outlines + flat, unblurred offset
-     shadows on every card/button/badge, like something cut out and
-     stuck down. Every big content block (hero art, product tiles,
-     avatar) is a dashed "wiggle zone" — explicitly reserved, unstyled
-     space for the line-boil doodle animations to drop into later.
    ============================================================ */
 
-  @font-face {
-    font-family: 'Seblak';
-    src: url('Fonts/Seblack.otf') format('opentype');
-    font-display: swap;
+:root{
+  --cream:#FFF8EC;
+  --paper:#FFFDF6;
+  --ink:#2A2622;
+  --yolk:#FFC93C;
+  --pond:#2EC4B6;
+  --comb:#FF6B6B;
+  --yarn:#9B7EDE;
+  --shell:#FFB27B;
+
+  --font-display:'Plus Jakarta Sans',system-ui,sans-serif;
+  --font-body:'Plus Jakarta Sans',system-ui,sans-serif;
+
+  --nav-w:88px;
+  --nav-w-mobile:64px;
+  --shadow-ink:5px 5px 0 var(--ink);
+  --shadow-ink-sm:3px 3px 0 var(--ink);
+}
+
+*,*::before,*::after{
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{
+    scroll-behavior:auto;
   }
+
+  *,*::before,*::after{
+    animation-duration:0.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:0.001ms !important;
+  }
+}
+
+body{
+  margin:0;
+  background:var(--cream);
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.5;
+}
+
+h1,h2,h3{
+  font-family:var(--font-display);
+  font-weight:800;
+  line-height:1.05;
+  margin:0;
+}
+
+a{
+  color:inherit;
+}
+
+.skip-link{
+  position:absolute;
+  left:-999px;
+  top:0;
+  background:var(--ink);
+  color:var(--cream);
+  padding:.75rem 1.25rem;
+  border-radius:0 0 10px 0;
+  z-index:200;
+}
+
+.skip-link:focus{
+  left:0;
+}
+
+img,svg{
+  display:block;
+  max-width:100%;
+}
+
+.eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:.5em;
+  font-family:var(--font-body);
+  font-weight:700;
+  font-size:.8rem;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--ink);
+  opacity:.65;
+  margin-bottom:.9rem;
+}
+
+.eyebrow::before{
+  content:"";
+  width:.5rem;
+  height:.5rem;
+  border-radius:50%;
+  background:var(--comb);
+  flex:none;
+}
+
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
+  font-family:var(--font-body);
+  font-weight:700;
+  font-size:1rem;
+  padding:.85rem 1.5rem;
+  border-radius:999px;
+  border:2.5px solid var(--ink);
+  text-decoration:none;
+  cursor:pointer;
+  box-shadow:var(--shadow-ink-sm);
+  transition:
+    transform .15s ease,
+    box-shadow .15s ease,
+    background .15s ease;
+}
+
+.btn:hover{
+  transform:translate(-2px,-2px);
+  box-shadow:5px 5px 0 var(--ink);
+}
+
+.btn:active{
+  transform:translate(1px,1px);
+  box-shadow:1px 1px 0 var(--ink);
+}
+
+.btn-primary{
+  background:var(--ink);
+  color:var(--cream);
+}
+
+.btn-primary:hover{
+  background:var(--pond);
+  color:var(--ink);
+}
+
+.btn-ghost{
+  background:transparent;
+  color:var(--ink);
+}
+
+.btn-ghost:hover{
+  background:var(--yolk);
+}
+
+
+/* ============================================================
+   LEFT / BOTTOM NAV
+   ============================================================ */
+
+.side-nav{
+  position:fixed;
+  top:0;
+  left:0;
+  height:100vh;
+  width:var(--nav-w);
+  background:var(--ink);
+  z-index:100;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:1.1rem 0 1.4rem;
+}
+
+.nav-logo{
+  width:46px;
+  height:46px;
+  margin-bottom:1.6rem;
+  flex:none;
+  color:var(--cream);
+}
+
+.nav-list{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:.65rem;
+  flex:1;
+  align-items:center;
+  justify-content:center;
+}
+
+.nav-link{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:48px;
+  height:48px;
+  border-radius:16px;
+  color:var(--cream);
+  text-decoration:none;
+  transition:transform .18s ease;
+}
+
+.nav-link svg{
+  width:24px;
+  height:24px;
+  position:relative;
+  z-index:2;
+}
+
+.nav-link .blob{
+  position:absolute;
+  inset:0;
+  border-radius:16px;
+  transform:scale(.85) rotate(0deg);
+  opacity:0;
+  transition:
+    opacity .18s ease,
+    transform .18s ease;
+  box-shadow:3px 3px 0 var(--cream);
+}
+
+.nav-link:hover,
+.nav-link:focus-visible,
+.nav-link.active{
+  transform:translateY(-2px) rotate(-3deg);
+}
+
+.nav-link:hover .blob,
+.nav-link:focus-visible .blob,
+.nav-link.active .blob{
+  opacity:1;
+  transform:scale(1) rotate(-4deg);
+}
+
+.nav-list li:nth-child(1) .blob{
+  background:var(--comb);
+}
+
+.nav-list li:nth-child(2) .blob{
+  background:var(--yolk);
+}
+
+.nav-list li:nth-child(3) .blob{
+  background:var(--pond);
+}
+
+.nav-list li:nth-child(4) .blob{
+  background:var(--yarn);
+}
+
+.nav-list li:nth-child(5) .blob{
+  background:var(--shell);
+}
+
+.nav-tooltip{
+  position:absolute;
+  left:64px;
+  top:50%;
+  transform:translateY(-50%) translateX(-6px);
+  background:var(--cream);
+  color:var(--ink);
+  font-weight:700;
+  font-size:.82rem;
+  padding:.4rem .7rem;
+  border-radius:8px;
+  white-space:nowrap;
+  border:2px solid var(--ink);
+  box-shadow:3px 3px 0 var(--ink);
+  opacity:0;
+  pointer-events:none;
+  transition:
+    opacity .15s ease,
+    transform .15s ease;
+  z-index:50;
+}
+
+.nav-link:hover .nav-tooltip,
+.nav-link:focus-visible .nav-tooltip{
+  opacity:1;
+  transform:translateY(-50%) translateX(0);
+}
+
+.nav-shop{
+  margin-top:.9rem;
+  flex:none;
+}
+
+.nav-shop .blob{
+  background:var(--pond);
+}
+
+
+/* ============================================================
+   SMOKE PUFFS — HOME
+   ============================================================ */
+
+.smoke-container{
+  position:absolute;
+  top:0px;
+  left:62%;
+  transform:translateX(-50%);
+  width:16px;
+  height:18px;
+  pointer-events:none;
+  z-index:10;
+  opacity:0;
+  transition:opacity 1s ease;
+}
+
+.nav-link.active .smoke-container,
+.nav-link:hover .smoke-container{
+  opacity:1;
+}
+
+.smoke-puff{
+  position:absolute;
+  background:var(--cream);
+  border-radius:50%;
+  opacity:0;
+  transform:scale(.3);
+}
+
+.smoke-puff:nth-child(1){
+  width:5px;
+  height:5px;
+  bottom:0;
+  left:5px;
+  animation:spewSmoke 2s infinite ease-out;
+}
+
+.smoke-puff:nth-child(2){
+  width:7px;
+  height:7px;
+  bottom:2px;
+  left:4px;
+  animation:spewSmoke 2s infinite ease-out .6s;
+}
+
+.smoke-puff:nth-child(3){
+  width:6px;
+  height:6px;
+  bottom:3px;
+  left:6px;
+  animation:spewSmoke 2s infinite ease-out 1.2s;
+}
+
+@keyframes spewSmoke{
+  0%{
+    transform:translateY(0) scale(.3);
+    opacity:1;
+  }
+
+  50%{
+    opacity:1;
+  }
+
+  100%{
+    transform:translateY(-16px) scale(1.1);
+    opacity:0;
+  }
+}
+
+
+/* ============================================================
+   PENCIL DRAWING — DOODLES
+   ============================================================ */
+
+.doodle-draw-container{
+  position:absolute;
+  top:22px;
+  left:50%;
+  transform:translateX(-50%);
+  width:19px;
+  height:10px;
+  pointer-events:none;
+  z-index:10;
+  opacity:0;
+  transition:opacity .2s ease;
+}
+
+.nav-link.active .doodle-draw-container,
+.nav-link:hover .doodle-draw-container{
+  opacity:1;
+}
+
+.doodle-pencil-path path{
+  stroke-dasharray:30;
+  stroke-dashoffset:30;
+  animation:drawLine 2s infinite linear;
+}
+
+@keyframes drawLine{
+  0%{
+    stroke-dashoffset:30;
+  }
+
+  50%{
+    stroke-dashoffset:0;
+  }
+
+  100%{
+    stroke-dashoffset:-30;
+  }
+}
+
+
+/* ============================================================
+   STICKER ICON — SMOOTH WIGGLE
+   ============================================================ */
+
+.nav-list li:nth-child(3) .nav-link svg{
+  transform-origin:center center;
+}
+
+.nav-list li:nth-child(3) .nav-link:hover svg,
+.nav-list li:nth-child(3) .nav-link:focus-visible svg,
+.nav-list li:nth-child(3) .nav-link.active svg{
+  animation:stickerWiggle 3.5s ease-in-out infinite;
+}
+
+@keyframes stickerWiggle{
+  0%{
+    transform:rotate(0deg);
+  }
+
+  25%{
+    transform:rotate(-15deg);
+  }
+
+  50%{
+    transform:rotate(15deg);
+  }
+
+  75%{
+    transform:rotate(-15deg);
+  }
+
+  100%{
+    transform:rotate(0deg);
+  }
+}
+
+
+/* ============================================================
+   NEEDLE FELTING ICON — NEEDLE WIGGLE
+   ============================================================ */
+
+/*
+  The .needle class should be placed on the needle portion
+  of the needle-felting SVG.
+
+  This keeps the wool completely still while the needle
+  gently wobbles back and forth.
+*/
+
+.nav-list li:nth-child(4) .needle{
+  transform-box:fill-box;
+  transform-origin:50% 90%;
+}
+
+.nav-list li:nth-child(4) .nav-link:hover .needle,
+.nav-list li:nth-child(4) .nav-link:focus-visible .needle,
+.nav-list li:nth-child(4) .nav-link.active .needle{
+  animation:needleWiggle 3.5s ease-in-out infinite;
+}
+
+@keyframes needleWiggle{
+  0%{
+    transform:rotate(0deg);
+  }
+
+  25%{
+    transform:rotate(-8deg);
+  }
+
+  50%{
+    transform:rotate(8deg);
+  }
+
+  75%{
+    transform:rotate(-8deg);
+  }
+
+  100%{
+    transform:rotate(0deg);
+  }
+}
+
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+
+main{
+  margin-left:var(--nav-w);
+}
+
+.blob-bg{
+  position:absolute;
+  border-radius:50%;
+  opacity:.55;
+  z-index:0;
+  animation:float 9s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%,100%{
+    transform:translateY(0) rotate(0deg);
+  }
+
+  50%{
+    transform:translateY(-16px) rotate(6deg);
+  }
+}
+
+.wiggle-zone{
+  position:relative;
+  border:2.5px dashed var(--ink);
+  border-radius:22px;
+  background:repeating-linear-gradient(
+    135deg,
+    rgba(42,38,34,.035) 0 10px,
+    transparent 10px 20px
+  );
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+
+.wiggle-zone .wiggle-label{
+  font-size:.8rem;
+  font-weight:600;
+  opacity:.5;
+  font-style:italic;
+  padding:0 1rem;
+}
+
+section{
+  padding:5.5rem 1.5rem;
+  position:relative;
+  overflow:hidden;
+}
+
+.section-inner{
+  max-width:1080px;
+  margin:0 auto;
+  position:relative;
+  z-index:1;
+}
+
+.section-head{
+  max-width:640px;
+  margin-bottom:3rem;
+}
+
+.section-head h2{
+  font-size:clamp(2.2rem,4vw,3rem);
+  margin-bottom:.6rem;
+}
+
+.section-head p{
+  font-size:1.05rem;
+  opacity:.8;
+  margin:0;
+}
+
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+.hero{
+  padding-top:4.5rem;
+}
+
+.hero .blob-bg:nth-child(1){
+  width:220px;
+  height:220px;
+  background:var(--yolk);
+  top:8%;
+  right:8%;
+}
+
+.hero .blob-bg:nth-child(2){
+  width:140px;
+  height:140px;
+  background:var(--pond);
+  bottom:6%;
+  left:2%;
+  animation-delay:1.5s;
+}
+
+.hero-grid{
+  display:block;
+  max-width:760px;
+}
+
+.hero h1{
+  font-size:clamp(4.5rem,11vw,8.5rem);
+  display:block;
+  width:100%;
+  line-height:.9;
+  text-align:left;
+  margin-bottom:.5rem;
+}
+
+.hero h1 .c1{
+  color:var(--comb);
+  display:block;
+  width:100%;
+  text-align:left;
+}
+
+.hero h1 .duck-art-line{
+  display:inline-flex;
+  align-items:baseline;
+  width:auto;
+}
+
+.hero h1 .c2{
+  color:var(--pond);
+}
+
+.hero h1 .ext{
+  font-family:var(--font-body);
+  font-size:.38em;
+  font-weight:800;
+  opacity:.7;
+}
+
+.hero-tagline{
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:clamp(1.3rem,2.4vw,1.8rem);
+  margin:1.2rem 0 1.1rem;
+}
+
+.hero-copy{
+  font-size:1.08rem;
+  max-width:46ch;
+  opacity:.85;
+  margin-bottom:2rem;
+}
+
+.hero-ctas{
+  display:flex;
+  flex-wrap:wrap;
+  gap:1rem;
+}
+
+
+/* ============================================================
+   PRODUCT CARDS
+   ============================================================ */
+
+.product-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1.75rem;
+}
+
+.product-card{
+  background:var(--paper);
+  border:2.5px solid var(--ink);
+  border-radius:20px;
+  box-shadow:var(--shadow-ink);
+  padding:1.1rem;
+  display:flex;
+  flex-direction:column;
+  gap:.9rem;
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease;
+}
+
+.product-card:hover{
+  transform:translate(-3px,-3px);
+  box-shadow:8px 8px 0 var(--ink);
+}
+
+.product-card .wiggle-zone{
+  aspect-ratio:4/3;
+  border-style:dashed;
+}
+
+.card-tag{
+  align-self:flex-start;
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  padding:.25rem .6rem;
+  border-radius:999px;
+  border:2px solid var(--ink);
+}
+
+.product-card:nth-child(1) .card-tag{
+  background:var(--yolk);
+}
+
+.product-card:nth-child(2) .card-tag{
+  background:var(--comb);
+}
+
+.product-card:nth-child(3) .card-tag{
+  background:var(--pond);
+}
+
+.product-card h3{
+  font-family:var(--font-body);
+  font-size:1.15rem;
+  font-weight:800;
+  margin:0;
+}
+
+.card-foot{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:auto;
+}
+
+.card-price{
+  font-weight:800;
+  opacity:.75;
+}
+
+
+/* ============================================================
+   DOODLES
+   ============================================================ */
+
+.section-doodles{
+  background:var(--paper);
+}
+
+.section-doodles .blob-bg:nth-child(3){
+  width:170px;
+  height:170px;
+  background:var(--shell);
+  top:0%;
+  left:-4%;
+}
+
+
+/* ============================================================
+   STICKERS
+   ============================================================ */
+
+.section-stickers .blob-bg:nth-child(3){
+  width:180px;
+  height:180px;
+  background:var(--yolk);
+  top:10%;
+  right:-2%;
+}
+
+.section-stickers .product-card:nth-child(1) .card-tag{
+  background:var(--comb);
+}
+
+.section-stickers .product-card:nth-child(2) .card-tag{
+  background:var(--yolk);
+}
+
+.section-stickers .product-card:nth-child(3) .card-tag{
+  background:var(--pond);
+}
+
+
+/* ============================================================
+   FELTED
+   ============================================================ */
+
+.section-felted .blob-bg:nth-child(3){
+  width:190px;
+  height:190px;
+  background:var(--yarn);
+  bottom:-3%;
+  right:-3%;
+  opacity:.4;
+}
+
+.section-felted .product-card:nth-child(1) .card-tag{
+  background:var(--yarn);
+}
+
+.section-felted .product-card:nth-child(2) .card-tag{
+  background:var(--shell);
+}
+
+.section-felted .product-card:nth-child(3) .card-tag{
+  background:var(--yolk);
+}
+
+
+/* ============================================================
+   ABOUT
+   ============================================================ */
+
+.section-about{
+  background:var(--paper);
+}
+
+.about-grid{
+  display:grid;
+  grid-template-columns:200px 1fr;
+  gap:2.5rem;
+  align-items:center;
+}
+
+.about-avatar .wiggle-zone{
+  aspect-ratio:1/1;
+  border-radius:50%;
+}
+
+.about-avatar .wiggle-zone svg{
+  width:52%;
+  opacity:.85;
+}
+
+.about-copy p{
+  font-size:1.05rem;
+  opacity:.85;
+  max-width:56ch;
+}
+
+
+/* ============================================================
+   FOOTER CTA
+   ============================================================ */
+
+.footer-cta{
+  background:var(--ink);
+  color:var(--cream);
+  text-align:center;
+}
+
+.footer-cta h2{
+  color:var(--cream);
+  font-size:clamp(2.2rem,5vw,3.4rem);
+  margin-bottom:.7rem;
+}
+
+.footer-cta p{
+  opacity:.75;
+  max-width:44ch;
+  margin:0 auto 2rem;
+}
+
+.footer-cta .btn-primary{
+  background:var(--yolk);
+  color:var(--ink);
+  border-color:var(--cream);
+  box-shadow:5px 5px 0 var(--cream);
+}
+
+.footer-cta .btn-primary:hover{
+  background:var(--comb);
+}
+
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.site-footer{
+  background:var(--ink);
+  color:var(--cream);
+  padding:2.5rem 1.5rem 6.5rem;
+  display:flex;
+  flex-wrap:wrap;
+  gap:1.25rem;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.footer-social{
+  display:flex;
+  gap:.75rem;
+}
+
+.footer-social a{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  border:2px solid var(--cream);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  transition:
+    background .15s ease,
+    transform .15s ease;
+}
+
+.footer-social a:hover{
+  background:var(--pond);
+  transform:translateY(-2px);
+}
+
+.footer-social svg{
+  width:18px;
+  height:18px;
+}
+
+.footer-copy{
+  font-size:.85rem;
+  opacity:.6;
+}
+
+
+/* ============================================================
+   REVEAL ANIMATION
+   ============================================================ */
+
+.reveal{
+  opacity:0;
+  transform:translateY(18px);
+  transition:
+    opacity .6s ease,
+    transform .6s ease;
+}
+
+.reveal.is-visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+
+/* ============================================================
+   TABLET
+   ============================================================ */
+
+@media (max-width:900px){
+
+  .product-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .about-grid{
+    grid-template-columns:120px 1fr;
+  }
+}
+
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width:620px){
 
   :root{
-    --cream:#FFF8EC;
-    --paper:#FFFDF6;
-    --ink:#2A2622;
-    --yolk:#FFC93C;
-    --pond:#2EC4B6;
-    --comb:#FF6B6B;
-    --yarn:#9B7EDE;
-    --shell:#FFB27B;
-
-    --font-display:'Seblak','Caveat',cursive;
-    --font-body:'Plus Jakarta Sans',system-ui,sans-serif;
-
-    --nav-w:88px;
-    --nav-w-mobile:64px;
-    --shadow-ink: 5px 5px 0 var(--ink);
-    --shadow-ink-sm: 3px 3px 0 var(--ink);
+    --nav-w:0px;
   }
 
-  *,*::before,*::after{ box-sizing:border-box; }
-  html{ scroll-behavior:smooth; }
-  @media (prefers-reduced-motion: reduce){
-    html{ scroll-behavior:auto; }
-    *,*::before,*::after{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  main{
+    margin-left:0;
+  }
+
+  .side-nav{
+    top:auto;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:var(--nav-w-mobile);
+    flex-direction:row;
+    padding:.5rem .75rem;
+  }
+
+  .nav-logo{
+    display:none;
+  }
+
+  .nav-list{
+    flex-direction:row;
+    width:100%;
+    justify-content:space-around;
+    gap:.25rem;
+  }
+
+  .nav-shop{
+    margin-top:0;
+  }
+
+  .nav-tooltip{
+    display:none;
   }
 
   body{
-    margin:0;
-    background:var(--cream);
-    color:var(--ink);
-    font-family:var(--font-body);
-    font-size:16px;
-    line-height:1.5;
+    padding-bottom:var(--nav-w-mobile);
   }
 
-  h1,h2,h3{
-    font-family:var(--font-display);
-    font-weight:400;
-    line-height:1.05;
-    margin:0;
+  section{
+    padding:3.5rem 1.25rem;
   }
 
-  a{ color:inherit; }
-
-  .skip-link{
-    position:absolute; left:-999px; top:0;
-    background:var(--ink); color:var(--cream);
-    padding:.75rem 1.25rem; border-radius:0 0 10px 0; z-index:200;
-  }
-  .skip-link:focus{ left:0; }
-
-  img,svg{ display:block; max-width:100%; }
-
-  .eyebrow{
-    display:inline-flex; align-items:center; gap:.5em;
-    font-family:var(--font-body); font-weight:700;
-    font-size:.8rem; letter-spacing:.08em; text-transform:uppercase;
-    color:var(--ink); opacity:.65;
-    margin-bottom:.9rem;
-  }
-  .eyebrow::before{
-    content:""; width:.5rem; height:.5rem; border-radius:50%;
-    background:var(--comb); flex:none;
+  .product-grid{
+    grid-template-columns:1fr;
   }
 
-  /* ---------- buttons ---------- */
-  .btn{
-    display:inline-flex; align-items:center; gap:.5rem;
-    font-family:var(--font-body); font-weight:700; font-size:1rem;
-    padding:.85rem 1.5rem; border-radius:999px;
-    border:2.5px solid var(--ink);
-    text-decoration:none; cursor:pointer;
-    box-shadow:var(--shadow-ink-sm);
-    transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+  .about-grid{
+    grid-template-columns:1fr;
+    text-align:center;
   }
-  .btn:hover{ transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--ink); }
-  .btn:active{ transform:translate(1px,1px); box-shadow:1px 1px 0 var(--ink); }
-  .btn-primary{ background:var(--ink); color:var(--cream); }
-  .btn-primary:hover{ background:var(--pond); color:var(--ink); }
-  .btn-ghost{ background:transparent; color:var(--ink); }
-  .btn-ghost:hover{ background:var(--yolk); }
 
-  /* ---------- left / bottom nav ---------- */
-  .side-nav{
-    position:fixed; top:0; left:0; height:100vh; width:var(--nav-w);
-    background:var(--ink); z-index:100;
-    display:flex; flex-direction:column; align-items:center;
-    padding:1.1rem 0 1.4rem;
+  .about-avatar{
+    max-width:160px;
+    margin:0 auto;
   }
-  .nav-logo{
-    width:46px; height:46px; margin-bottom:1.6rem; flex:none;
-    color:var(--cream);
+
+  .about-copy p{
+    margin-left:auto;
+    margin-right:auto;
   }
-  .nav-list{
-    list-style:none; margin:0; padding:0;
-    display:flex; flex-direction:column; gap:.65rem;
-    flex:1;
-    align-items:center;
+
+  .hero-ctas{
     justify-content:center;
   }
-  .nav-link{
-    position:relative;
-    display:flex; align-items:center; justify-content:center;
-    width:48px; height:48px; border-radius:16px;
-    color:var(--cream); text-decoration:none;
-    transition:transform .18s ease;
-  }
-  .nav-link svg{ width:24px; height:24px; position:relative; z-index:2; }
-  .nav-link .blob{
-    position:absolute; inset:0; border-radius:16px;
-    transform:scale(.85) rotate(0deg);
-    opacity:0; transition:opacity .18s ease, transform .18s ease;
-    box-shadow:3px 3px 0 var(--cream);
-  }
-  .nav-link:hover, .nav-link:focus-visible, .nav-link.active{ transform:translateY(-2px) rotate(-3deg); }
-  .nav-link:hover .blob, .nav-link:focus-visible .blob, .nav-link.active .blob{
-    opacity:1; transform:scale(1) rotate(-4deg);
-  }
-  .nav-list li:nth-child(1) .blob{ background:var(--comb); }
-  .nav-list li:nth-child(2) .blob{ background:var(--yolk); }
-  .nav-list li:nth-child(3) .blob{ background:var(--pond); }
-  .nav-list li:nth-child(4) .blob{ background:var(--yarn); }
-  .nav-list li:nth-child(5) .blob{ background:var(--shell); }
-  .nav-tooltip{
-    position:absolute; left:64px; top:50%; transform:translateY(-50%) translateX(-6px);
-    background:var(--cream); color:var(--ink); font-weight:700; font-size:.82rem;
-    padding:.4rem .7rem; border-radius:8px; white-space:nowrap;
-    border:2px solid var(--ink); box-shadow:3px 3px 0 var(--ink);
-    opacity:0; pointer-events:none; transition:opacity .15s ease, transform .15s ease;
-    z-index:50;
-  }
-  .nav-link:hover .nav-tooltip, .nav-link:focus-visible .nav-tooltip{
-    opacity:1; transform:translateY(-50%) translateX(0);
-  }
-  .nav-shop{
-    margin-top:.9rem; flex:none;
-  }
-  .nav-shop .blob{ background:var(--pond); }
+}
 
-  main{ margin-left:var(--nav-w); }
-
-  /* ---------- decorative blobs (ambient color, not the doodle animations) ---------- */
-  .blob-bg{
-    position:absolute; border-radius:50%; filter:blur(0px);
-    opacity:.55; z-index:0;
-    animation:float 9s ease-in-out infinite;
-  }
-  @keyframes float{
-    0%,100%{ transform:translateY(0) rotate(0deg); }
-    50%{ transform:translateY(-16px) rotate(6deg); }
-  }
-
-  /* ---------- wiggle zone (reserved animation space) ---------- */
-  .wiggle-zone{
-    position:relative;
-    border:2.5px dashed var(--ink);
-    border-radius:22px;
-    background:repeating-linear-gradient(135deg, rgba(42,38,34,.035) 0 10px, transparent 10px 20px);
-    display:flex; align-items:center; justify-content:center;
-    text-align:center;
-  }
-  .wiggle-zone .wiggle-label{
-    font-size:.8rem; font-weight:600; opacity:.5; font-style:italic;
-    padding:0 1rem;
-  }
-
-  /* ---------- section shells ---------- */
-  section{ padding:5.5rem 1.5rem; position:relative; overflow:hidden; }
-  .section-inner{ max-width:1080px; margin:0 auto; position:relative; z-index:1; }
-  .section-head{ max-width:640px; margin-bottom:3rem; }
-  .section-head h2{ font-size:clamp(2.2rem, 4vw, 3rem); margin-bottom:.6rem; }
-  .section-head p{ font-size:1.05rem; opacity:.8; margin:0; }
-
-  /* ---------- hero ---------- */
-  .hero{ padding-top:4.5rem; }
-  .hero .blob-bg:nth-child(1){ width:220px; height:220px; background:var(--yolk); top:8%; right:8%; }
-  .hero .blob-bg:nth-child(2){ width:140px; height:140px; background:var(--pond); bottom:6%; left:2%; animation-delay:1.5s; }
-  .hero-grid{
-    display:grid; grid-template-columns:1.1fr 1fr; gap:3rem; align-items:center;
-  }
-  .hero h1{
-    font-size:clamp(3.4rem, 8vw, 6rem);
-    display:flex; flex-wrap:wrap; align-items:baseline; gap:.15em;
-  }
-  .hero h1 .c1{ color:var(--comb); }
-  .hero h1 .c2{ color:var(--pond); }
-  .hero h1 .ext{ font-family:var(--font-body); font-size:.28em; font-weight:800; opacity:.55; align-self:flex-start; margin-top:.4em;}
-  .hero-tagline{
-    font-family:var(--font-display); font-weight:400;
-    font-size:clamp(1.3rem,2.4vw,1.8rem);
-    margin:1rem 0 1.1rem;
-  }
-  .hero-copy{ font-size:1.08rem; max-width:46ch; opacity:.85; margin-bottom:2rem; }
-  .hero-ctas{ display:flex; flex-wrap:wrap; gap:1rem; }
-  .hero-art .wiggle-zone{ aspect-ratio:1/1; }
-  .hero-art .wiggle-zone svg{ width:46%; opacity:.9; }
-
-  /* ---------- product grid (doodles / felted) ---------- */
-  .product-grid{
-    display:grid; grid-template-columns:repeat(3,1fr); gap:1.75rem;
-  }
-  .product-card{
-    background:var(--paper); border:2.5px solid var(--ink); border-radius:20px;
-    box-shadow:var(--shadow-ink);
-    padding:1.1rem; display:flex; flex-direction:column; gap:.9rem;
-    transition:transform .18s ease, box-shadow .18s ease;
-  }
-  .product-card:hover{ transform:translate(-3px,-3px); box-shadow:8px 8px 0 var(--ink); }
-  .product-card .wiggle-zone{ aspect-ratio:4/3; border-style:dashed; }
-  .card-tag{
-    align-self:flex-start;
-    font-size:.72rem; font-weight:800; letter-spacing:.04em; text-transform:uppercase;
-    padding:.25rem .6rem; border-radius:999px; border:2px solid var(--ink);
-  }
-  .product-card:nth-child(1) .card-tag{ background:var(--yolk); }
-  .product-card:nth-child(2) .card-tag{ background:var(--comb); }
-  .product-card:nth-child(3) .card-tag{ background:var(--pond); }
-  .product-card h3{ font-family:var(--font-body); font-size:1.15rem; font-weight:800; margin:0; }
-  .card-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:auto; }
-  .card-price{ font-weight:800; opacity:.75; }
-  .section-cta{ margin-top:2.75rem; }
-
-  .section-doodles{ background:var(--paper); }
-  .section-doodles .blob-bg:nth-child(3){ width:170px; height:170px; background:var(--shell); top:0%; left:-4%; }
-
-  .section-felted .blob-bg:nth-child(3){ width:190px; height:190px; background:var(--yarn); bottom:-3%; right:-3%; opacity:.4; }
-  .section-felted .product-card:nth-child(1) .card-tag{ background:var(--yarn); }
-  .section-felted .product-card:nth-child(2) .card-tag{ background:var(--shell); }
-  .section-felted .product-card:nth-child(3) .card-tag{ background:var(--yolk); }
-
-  /* ---------- about ---------- */
-  .section-about{ background:var(--paper); }
-  .about-grid{ display:grid; grid-template-columns:200px 1fr; gap:2.5rem; align-items:center; }
-  .about-avatar .wiggle-zone{ aspect-ratio:1/1; border-radius:50%; }
-  .about-avatar .wiggle-zone svg{ width:52%; opacity:.85; }
-  .about-copy p{ font-size:1.05rem; opacity:.85; max-width:56ch; }
-
-  /* ---------- footer / shop CTA ---------- */
-  .footer-cta{
-    background:var(--ink); color:var(--cream);
-    text-align:center;
-  }
-  .footer-cta h2{ color:var(--cream); font-size:clamp(2.2rem,5vw,3.4rem); margin-bottom:.7rem; }
-  .footer-cta p{ opacity:.75; max-width:44ch; margin:0 auto 2rem; }
-  .footer-cta .btn-primary{ background:var(--yolk); color:var(--ink); border-color:var(--cream); box-shadow:5px 5px 0 var(--cream); }
-  .footer-cta .btn-primary:hover{ background:var(--comb); }
-
-  .site-footer{
-    background:var(--ink); color:var(--cream);
-    padding:2.5rem 1.5rem 6.5rem;
-    display:flex; flex-wrap:wrap; gap:1.25rem;
-    align-items:center; justify-content:space-between;
-  }
-  .footer-social{ display:flex; gap:.75rem; }
-  .footer-social a{
-    width:40px; height:40px; border-radius:50%; border:2px solid var(--cream);
-    display:flex; align-items:center; justify-content:center; text-decoration:none;
-    transition:background .15s ease, transform .15s ease;
-  }
-  .footer-social a:hover{ background:var(--pond); transform:translateY(-2px); }
-  .footer-social svg{ width:18px; height:18px; }
-  .footer-copy{ font-size:.85rem; opacity:.6; }
-
-  /* ---------- reveal on scroll ---------- */
-  .reveal{ opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
-  .reveal.is-visible{ opacity:1; transform:translateY(0); }
-
-  /* ---------- responsive ---------- */
-  @media (max-width: 900px){
-    .hero-grid{ grid-template-columns:1fr; }
-    .hero-art{ order:-1; max-width:320px; margin:0 auto; }
-    .product-grid{ grid-template-columns:1fr 1fr; }
-    .about-grid{ grid-template-columns:120px 1fr; }
-  }
-
-  @media (max-width: 620px){
-    :root{ --nav-w:0px; }
-    main{ margin-left:0; }
-    .side-nav{
-      top:auto; bottom:0; left:0; width:100%; height:var(--nav-w-mobile);
-      flex-direction:row; padding:.5rem .75rem;
-    }
-    .nav-logo{ display:none; }
-    .nav-list{ flex-direction:row; width:100%; justify-content:space-around; gap:.25rem; }
-    .nav-shop{ margin-top:0; }
-    .nav-tooltip{ display:none; }
-    body{ padding-bottom:var(--nav-w-mobile); }
-    section{ padding:3.5rem 1.25rem; }
-    .product-grid{ grid-template-columns:1fr; }
-    .about-grid{ grid-template-columns:1fr; text-align:center; }
-    .about-avatar{ max-width:160px; margin:0 auto; }
-    .about-copy p{ margin-left:auto; margin-right:auto; }
-    .hero-ctas{ justify-content:center; }
-  }
 </style>
 </head>
 <body>
@@ -353,7 +1051,6 @@
 
 <nav class="side-nav" aria-label="Main">
   <a href="#home" class="nav-logo" aria-label="chickenduck.art home">
-    <!-- mascot logomark -->
     <svg viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M11 26c-1-8 4.5-16 12.5-16 5 0 7.5 2.3 7.5 4.8 0 1.4-1 2.2-1 2.2 3 .6 5 2.8 5 5.4 0 5-5 9.6-13 9.6S11 32 11 26z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
       <path d="M17.5 10.5c-1-1.6-.5-3 .5-3.3M21 8.7c-.3-1.8.6-3 1.8-3M25 9c.4-1.7 1.8-2.6 2.9-2.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -363,110 +1060,102 @@
   </a>
 
   <ul class="nav-list">
+    <!-- 1. HOME PAGE -->
     <li>
       <a href="#home" class="nav-link active" aria-label="Home">
         <span class="blob"></span>
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 11.5 12 4.5l8 7"/>
-          <path d="M6 10.3V19a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8.7"/>
-          <path d="M12 16.6c-1.7-1.5-2.8-2.4-2.8-3.7 0-.9.7-1.5 1.5-1.5.7 0 1.1.4 1.3.9.2-.5.6-.9 1.3-.9.8 0 1.5.6 1.5 1.5 0 1.3-1.1 2.2-2.8 3.7z" fill="currentColor" stroke="none"/>
-        </svg>
+        <div class="smoke-container" aria-hidden="true">
+          <span class="smoke-puff"></span>
+          <span class="smoke-puff"></span>
+          <span class="smoke-puff"></span>
+        </div>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"/><g stroke-linecap="round" stroke-linejoin="round"/><g stroke="#fff8ec" stroke-width="1.5"><path d="M22 22H2m0-11 8.126-6.5a3 3 0 0 1 3.748 0L22 11m-6.5-5.5v-2A.5.5 0 0 1 16 3h2.5a.5.5 0 0 1 .5.5v5M4 22V9.5M20 22V9.5" stroke-linecap="round"/><path d="M15 22v-5c0-1.414 0-2.121-.44-2.56C14.122 14 13.415 14 12 14s-2.121 0-2.56.44C9 14.878 9 15.585 9 17v5m5-12.5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/></g></svg>
         <span class="nav-tooltip">Home</span>
       </a>
     </li>
+    
+    <!-- 2. DOODLES -->
     <li>
-      <a href="doodles.html" class="nav-link" aria-label="Doodles">
+      <a href="#doodles" class="nav-link" aria-label="Doodles">
         <span class="blob"></span>
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 16.5c1.6-3.6 3.4 3.4 5.2.2 1.8-3.2 3.4-4.8 5-1.6 1.4 2.8 3.3 1 4.3-.6"/>
-          <path d="M17.5 5v3.2M16 6.6h3M19.6 5l-1.8 1.8M20 5l-1.8 1.8" transform="translate(-1,0)"/>
-        </svg>
+        <div class="doodle-draw-container" aria-hidden="true">
+          <svg class="doodle-pencil-path" viewBox="0 0 24 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 3C5 1 8 5 12 3C16 1 19 5 23 3" stroke="#fff8ec" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"/><g stroke-linecap="round" stroke-linejoin="round"/><path d="m13.888 3.663.742-.742a3.146 3.146 0 1 1 4.449 4.45l-.742.74m-4.449-4.448s.093 1.576 1.483 2.966 2.966 1.483 2.966 1.483m-4.449-4.45L7.071 10.48c-.462.462-.693.692-.891.947a5.2 5.2 0 0 0-.599.969c-.139.291-.242.601-.449 1.22l-.875 2.626m14.08-8.13-6.817 6.817c-.462.462-.692.692-.947.891q-.451.352-.969.599c-.291.139-.601.242-1.22.448l-2.626.876m0 0-.641.213a.848.848 0 0 1-1.073-1.073l.213-.641m1.501 1.5-1.5-1.5" stroke="#fff8ec" stroke-width="1.5"/></svg>
         <span class="nav-tooltip">Doodles</span>
       </a>
     </li>
+
+    <!-- 3. STICKERS -->
     <li>
-      <a href="stickers.html" class="nav-link" aria-label="Stickers">
+      <a href="#stickers" class="nav-link" aria-label="Stickers">
         <span class="blob"></span>
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 6.8A1.8 1.8 0 0 1 6.8 5h7.7c.5 0 1 .2 1.3.6l3.6 3.6c.4.4.6.8.6 1.3v7.7A1.8 1.8 0 0 1 18.2 20H6.8A1.8 1.8 0 0 1 5 18.2z"/>
-          <path d="M15 5.4V9a1.6 1.6 0 0 0 1.6 1.6h3.6"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"/><g stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12c0 5.523 4.477 10 10 10 .648 0 1.25-.3 1.708-.758l7.534-7.534C21.7 13.25 22 12.648 22 12c0-5.523-4.477-10-10-10S2 6.477 2 12Z" stroke="#fff8ec" stroke-width="1.5"/><path d="M8.913 15.934a8.1 8.1 0 0 0 3.356.1" stroke="#fff8ec" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="14.509" cy="9.774" rx="1" ry="1.5" transform="rotate(-15 14.51 9.774)" fill="#fff8ec"/><ellipse cx="8.714" cy="11.328" rx="1" ry="1.5" transform="rotate(-15 8.714 11.328)" fill="#fff8ec"/><path d="M12 22c0-2.793 0-4.19.393-5.312a7 7 0 0 1 4.295-4.295C17.811 12 19.208 12 22 12" stroke="#fff8ec" stroke-width="1.5"/></svg>
         <span class="nav-tooltip">Stickers</span>
       </a>
     </li>
+    
+    <!-- 4. NEEDLE FELTING -->
     <li>
-      <a href="felted.html" class="nav-link" aria-label="Felted friends">
+      <a href="#felted" class="nav-link" aria-label="Needle Felting">
         <span class="blob"></span>
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="10.5" cy="14" r="6"/>
-          <path d="M5.3 11.4c3 1.2 7.4 1.2 10 2.6M5.6 17c3-1.2 7.1-1.2 9.8-3.2M8 8.3c1.6 2.8 1.6 8.8 0 11.6"/>
-          <path d="M15 8.6l4.6-3.4M18.4 4l1.2 1.3"/>
-        </svg>
-        <span class="nav-tooltip">Felted friends</span>
+        <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><path d="M31.93 195.29c-7.32-.96-13.44-6.39-15.37-13.69-.43-1.6-.43-1.8-.55-21.19l-.1-19.57-1.66-.8c-2.15-1.05-3.73-2.21-5.21-3.79-1.54-1.64-2.27-2.7-3.18-4.67-1.35-2.85-1.66-4.32-1.64-7.66 0-2.6.06-3.13.53-4.69.68-2.25 1.62-4.14 2.97-5.92l1.07-1.43-.86-1.05c-2.34-2.87-3.55-6.05-3.77-9.92-.23-4.2 1.11-8.48 3.67-11.64l.96-1.19-.66-.74c-2.71-3.03-4.18-7.42-3.96-11.95.16-3.36 1.19-6.56 2.97-9.28 1.66-2.54 5.14-5.45 7.77-6.52l1.09-.45.06-19.65.06-19.67.53-1.86c2.13-7.81 7.89-12.87 15.53-13.65 4.61-.47 9.53.88 12.7 3.5l1.21 1.02 1.23-1c2.99-2.42 6.62-3.61 11-3.57 3.96.02 7.42 1.17 10.41 3.46l1.41 1.09 1.21-.98c4.61-3.73 11.64-4.69 17.54-2.36 1.45.57 2.58 1.23 4.04 2.38.68.51 1.27.94 1.35.94.06 0 .53-.35 1.02-.8 3.01-2.66 8.34-4.18 12.79-3.69 2.42.27 3.81.66 5.92 1.66 4.59 2.19 7.97 6.37 9.49 11.72l.45 1.56.06 19.88.06 19.86 1.91.96c5.55 2.79 9.12 7.77 9.98 13.98.66 4.71-.66 9.16-4.08 13.59l-.41.51.86 1.09c1.27 1.64 2.62 4.41 3.18 6.54.68 2.58.72 5.98.1 8.54-.55 2.17-1.86 4.88-3.14 6.46l-.98 1.21.86 1.09c1.88 2.42 2.97 5 3.52 8.32 1.33 7.83-3.18 16.02-10.45 18.96l-1.27.51-.1 19.8-.1 19.69-.1 19.8-.53 21.37-.59 2.07-2.15 5.16-3.44 6.74-3.81 4.69-9.61 7.11-15.82 6.6-3.46-.27-7.23-1.84-9.45-3.93l-.63-.59-1.54 1.19c-2.62 1.95-5.31 2.99-8.73 3.34-4.49.45-9.38-.9-12.54-3.5l-1.21-.98-1.23.98c-2.29 1.86-5.43 3.09-8.98 3.52-4.49.55-10.02-1.11-12.87-3.85l-.7-.66-1.33 1c-3.61 2.73-8.65 4.08-13.09 3.5zm4.26-12.21c1.23-.41 2.54-1.62 3.2-2.97l.55-1.11.06-18.59.04-18.61H28.32l.04 18.71.06 18.69.45.88c1.35 2.75 4.41 4 7.32 3.01zm24.28-.16c1.17-.55 2.25-1.56 2.85-2.71l.45-.82.06-18.79.04-18.81H52.15l.04 18.71.06 18.69.45.82c1.17 2.21 3.07 3.38 5.41 3.38 1.04 0 1.62-.12 2.36-.47m24 0c1.31-.61 2.73-2.21 3.13-3.5.25-.86.29-3.54.29-19.32v-18.32H76.17l.04 18.71.06 18.69.59 1.05c.68 1.25 1.97 2.42 3.09 2.83 1.31.45 3.38.39 4.53-.16zm23.59.16c1.23-.41 2.54-1.62 3.2-2.97l.55-1.11.06-18.59.04-18.61h-11.72l.04 18.71.06 18.69.53.98c.47.88 1.19 1.7 2.15 2.42 1.07.8 3.5 1.04 5.1.49zm12.56-53.83c4.51-2.38 4.43-8.34-.12-10.72l-.88-.47H20.8l-1.23.57c-2.07.96-3.36 2.91-3.36 5.1 0 1.52.25 2.4 1.05 3.55.64.94 2.19 2.05 3.34 2.38.33.1 21.86.18 49.8.16l49.22-.04zm-.29-23.71c1.25-.59 2.44-1.72 3.07-2.89.45-.84.53-1.23.51-2.56 0-1.93-.55-3.13-2.03-4.45-1.84-1.66 3.22-1.5-52.15-1.46l-49.32.06-1.05.59c-3.38 1.88-4.22 6.17-1.74 8.98 1.04 1.17 2.29 1.88 3.63 2.05.61.08 22.95.14 49.65.12l48.54-.02.9-.41zm.21-24.08c1.19-.59 2.34-1.74 2.93-2.91.66-1.37.64-3.67-.08-5.04-.66-1.27-2.17-2.62-3.4-3.07-.9-.31-3.73-.33-49.92-.33-47.87 0-49 0-49.96.37-4.47 1.7-5.29 7.73-1.43 10.39 1.76 1.21-2.15 1.13 51.62 1.09l49.32-.04.92-.47zM39.99 39.31l-.06-18.91-.53-1c-1.15-2.17-3.52-3.57-5.7-3.34-2.05.21-4.02 1.6-4.88 3.44-.41.9-.41.92-.47 19.8l-.04 18.89h11.72l-.04-18.89zm23.83-.1-.06-19-.45-.82c-.68-1.29-1.54-2.15-2.73-2.73-1.54-.76-3.59-.76-5.02-.02-1.25.66-2.3 1.76-2.87 2.99l-.45.98-.06 18.55c-.02 10.2 0 18.65.04 18.79.08.2 1.39.25 5.88.25h5.76l-.04-18.98zm24.02.1c-.06-18.89-.06-18.91-.49-19.82-.51-1.13-1.84-2.42-2.99-2.97-.64-.29-1.27-.41-2.34-.41-1.31 0-1.6.08-2.71.68-.82.43-1.48.98-1.89 1.56-1.31 1.74-1.25.88-1.25 21.33V58.2h11.72l-.04-18.89zm24.02 0-.06-18.91-.53-1.02c-1.15-2.17-2.89-3.28-5.14-3.28-2.38 0-4.34 1.25-5.35 3.42l-.51 1.07-.06 18.81-.04 18.79h11.72l-.04-18.89zm49.82 155.9c-6.23-.86-12.44-3.98-17.05-8.59-6.76-6.76-9.8-16.17-8.2-25.27.7-3.96 1.89-7.44 6.7-19.47 2.85-7.11 4.32-11.93 4.73-15.61.12-1.02.2-7.29.2-14.75V98.53l.51-1.07c.66-1.46 1.88-2.66 3.16-3.13.9-.33 1.52-.39 4.63-.39h3.61V8.88l.47-1.02c.66-1.39 1.88-2.66 3.11-3.2 1.52-.68 3.75-.66 5.25.08 1.21.59 2.25 1.62 2.93 2.91l.45.84.06 42.71.04 42.73h3.57c4.12 0 4.88.18 6.27 1.39.49.43 1.11 1.27 1.43 1.89l.55 1.11.12 14.26c.12 14.92.1 14.55 1.02 18.46.51 2.09 1.54 5.08 3.75 10.74 3.81 9.77 4.14 10.63 5.04 13.3 1.43 4.18 1.95 7.09 1.95 10.72 0 4.82-.78 8.28-2.87 12.6-1.58 3.24-3.2 5.53-5.78 8.11-4.84 4.82-10.7 7.73-17.44 8.69-2.42.35-5.63.35-8.18 0zm8.22-12.13c3.3-.74 6.23-2.4 8.83-4.96 3.16-3.16 4.82-6.74 5.18-11.23.29-3.61-.45-6.25-5.04-17.87-4.45-11.29-5.74-15.04-6.11-17.91l-.14-1.04h-13.16l-.23 1.72c-.45 3.42-1.21 5.61-6.21 18.16-3.54 8.85-4.24 10.9-4.71 13.79-1.5 9.02 5.76 18.36 15.27 19.63 1.68.23 4.65.1 6.33-.29z" fill="#fff8ec"/></svg>
+        <span class="nav-tooltip">Needle Felting</span>
       </a>
     </li>
+    
+    <!-- 5. INFO/ABOUT -->
     <li>
-      <a href="about.html" class="nav-link" aria-label="About">
+      <a href="#about" class="nav-link" aria-label="About">
         <span class="blob"></span>
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="13.5" r="7"/>
-          <path d="M9 5.3q1-2 3-1M12 4q1.6-1.4 3 .1M15.2 4.9q1.1-1 2.4-.2" stroke-linecap="round"/>
-          <circle cx="9.6" cy="12.2" r="0.9" fill="currentColor" stroke="none"/>
-          <circle cx="14.4" cy="12.2" r="0.9" fill="currentColor" stroke="none"/>
-          <path d="M10.6 15.6q1.4 1.3 2.8 0" />
-        </svg>
+        <svg fill="#fff8ec" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"/><g stroke-linecap="round" stroke-linejoin="round"/><title/><path d="M66 84H54V42a5.997 5.997 0 0 0-6-6H36a6 6 0 0 0 0 12h6v36H30a6 6 0 0 0 0 12h36a6 6 0 0 0 0-12M48 24a12 12 0 1 0-12-12 12.01 12.01 0 0 0 12 12"/></svg>
         <span class="nav-tooltip">About</span>
       </a>
     </li>
   </ul>
 
+  <!-- 6. SHOP/STORE -->
   <a href="https://shop.chickenduck.art" target="_blank" rel="noopener" class="nav-link nav-shop" aria-label="Shop (opens shop.chickenduck.art)">
     <span class="blob"></span>
-    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M6.5 8.2h11l-.9 11.2a1.6 1.6 0 0 1-1.6 1.5H9a1.6 1.6 0 0 1-1.6-1.5z"/>
-      <path d="M9.2 8V6.6a2.8 2.8 0 0 1 5.6 0V8"/>
-    </svg>
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"/><g stroke-linecap="round" stroke-linejoin="round"/><path fill-rule="evenodd" clip-rule="evenodd" d="M2 1a1 1 0 0 0 0 2h1.22l3.563 14.257A3 3 0 1 0 10.83 19h4.342A3 3 0 1 0 18 17H8.78l-.5-2H18c2.064 0 3.302-1.304 3.989-2.744.67-1.407.904-3.09.986-4.312C23.088 6.24 21.68 5 20.121 5H5.781L5.16 2.515A2 2 0 0 0 3.22 1zm16 12H7.78l-1.5-6h13.841c.553 0 .885.407.858.81-.076 1.142-.288 2.522-.795 3.585C19.692 12.425 19.02 13 18 13m0 7.994a.994.994 0 1 1 0-1.988.994.994 0 0 1 0 1.988M7.006 20a.994.994 0 1 0 1.988 0 .994.994 0 0 0-1.988 0" fill="#fff8ec"/></svg>
     <span class="nav-tooltip">Shop ↗</span>
   </a>
 </nav>
 
 <main id="main">
 
-  <!-- ================= HERO ================= -->
   <section class="hero" id="home">
     <span class="blob-bg" aria-hidden="true"></span>
     <span class="blob-bg" aria-hidden="true"></span>
     <div class="section-inner hero-grid">
       <div class="hero-copy-col reveal">
         <p class="eyebrow">hand-doodled &amp; hand-felted</p>
-        <h1><span class="c1">chicken</span><span class="c2">duck</span><span class="ext">.art</span></h1>
-        <p class="hero-tagline">half chicken, half duck, entirely doodled.</p>
-        <p class="hero-copy">I draw wobbly little creatures and turn them into framed prints and stickers, plus a growing shelf of needle-felted monsters, eyeballs, and tiny snails you can actual[...]
+        <h1>
+          <span class="c1">chicken</span>
+          <span class="duck-art-line">
+            <span class="c2">duck</span>
+            <span class="ext">.art</span>
+          </span>
+        </h1>
+        <p class="hero-tagline">wobbly doodles, stickers, and fuzzy little creatures.</p>
+        <p class="hero-copy">I draw quirky little characters and turn them into framed prints and stickers, alongside a growing shelf of needle-felted monsters, eyeballs, and tiny snails you can hold.</p>
         <div class="hero-ctas">
           <a href="#doodles" class="btn btn-primary">see the doodles</a>
           <a href="https://shop.chickenduck.art" target="_blank" rel="noopener" class="btn btn-ghost">visit the shop ↗</a>
         </div>
       </div>
-      <div class="hero-art reveal">
-        <div class="wiggle-zone">
-          <svg viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:var(--ink)">
-            <path d="M11 26c-1-8 4.5-16 12.5-16 5 0 7.5 2.3 7.5 4.8 0 1.4-1 2.2-1 2.2 3 .6 5 2.8 5 5.4 0 5-5 9.6-13 9.6S11 32 11 26z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="rou[...]
-            <circle cx="19.5" cy="24" r="1.4" fill="currentColor"/>
-          </svg>
-          <span class="wiggle-label">( a doodle wiggles here )</span>
-        </div>
-      </div>
     </div>
   </section>
 
-  <!-- ================= DOODLES ================= -->
   <section class="section-doodles" id="doodles">
     <span class="blob-bg" aria-hidden="true"></span>
     <div class="section-inner">
       <div class="section-head reveal">
         <p class="eyebrow">flat &amp; framed</p>
         <h2>the doodles</h2>
-        <p>Loose ink sketches, cleaned up just enough to hang on a wall or slap on a laptop. Every line wobbles on purpose.</p>
+        <p>Loose ink sketches, cleaned up just enough to hang on a wall. Every line wobbles on purpose.</p>
       </div>
       <div class="product-grid">
         <article class="product-card reveal">
@@ -477,9 +1166,9 @@
         </article>
         <article class="product-card reveal">
           <div class="wiggle-zone"><span class="wiggle-label">(animated doodle)</span></div>
-          <span class="card-tag">sticker pack</span>
-          <h3>everyday weirdos</h3>
-          <div class="card-foot"><span class="card-price">from $6</span></div>
+          <span class="card-tag">framed print</span>
+          <h3>lost thoughts</h3>
+          <div class="card-foot"><span class="card-price">from $30</span></div>
         </article>
         <article class="product-card reveal">
           <div class="wiggle-zone"><span class="wiggle-label">(animated doodle)</span></div>
@@ -488,11 +1177,40 @@
           <div class="card-foot"><span class="card-price">from $32</span></div>
         </article>
       </div>
-      <a href="doodles.html" class="btn btn-ghost section-cta">see all the doodles →</a>
     </div>
   </section>
 
-  <!-- ================= FELTED ================= -->
+  <section class="section-stickers" id="stickers">
+    <span class="blob-bg" aria-hidden="true"></span>
+    <div class="section-inner">
+      <div class="section-head reveal">
+        <p class="eyebrow">peel &amp; stick</p>
+        <h2>the stickers</h2>
+        <p>Weatherproof vinyl stickers designed to live on laptops, water bottles, and notebooks. Take your favorite weirdos everywhere.</p>
+      </div>
+      <div class="product-grid">
+        <article class="product-card reveal">
+          <div class="wiggle-zone"><span class="wiggle-label">(animated doodle)</span></div>
+          <span class="card-tag">sticker sheet</span>
+          <h3>everyday weirdos sheet</h3>
+          <div class="card-foot"><span class="card-price">from $8</span></div>
+        </article>
+        <article class="product-card reveal">
+          <div class="wiggle-zone"><span class="wiggle-label">(animated doodle)</span></div>
+          <span class="card-tag">die-cut vinyl</span>
+          <h3>glaring eyeball sticker</h3>
+          <div class="card-foot"><span class="card-price">$4</span></div>
+        </article>
+        <article class="product-card reveal">
+          <div class="wiggle-zone"><span class="wiggle-label">(animated doodle)</span></div>
+          <span class="card-tag">die-cut vinyl</span>
+          <h3>slow snail sticker</h3>
+          <div class="card-foot"><span class="card-price">$4</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <section class="section-felted" id="felted">
     <span class="blob-bg" aria-hidden="true"></span>
     <div class="section-inner">
@@ -521,11 +1239,9 @@
           <div class="card-foot"><span class="card-price">from $18</span></div>
         </article>
       </div>
-      <a href="felted.html" class="btn btn-ghost section-cta">meet the whole gang →</a>
     </div>
   </section>
 
-  <!-- ================= ABOUT ================= -->
   <section class="section-about" id="about">
     <div class="section-inner about-grid">
       <div class="about-avatar reveal">
@@ -534,14 +1250,13 @@
         </div>
       </div>
       <div class="about-copy reveal">
-        <p class="eyebrow">who's behind the beak</p>
-        <h2 style="font-size:clamp(2rem,3.6vw,2.6rem); margin-bottom:.8rem;">hi, i draw the chickens and felt the ducks</h2>
-        <p>chickenduck started as a doodle in the margin of a notebook and got a little out of hand. now it's framed prints, sticker sheets, and a shelf of needle-felted creatures that judge me w[...]
+        <p class="eyebrow">who's behind the sketchbook</p>
+        <h2 style="font-size:clamp(2rem,3.6vw,2.6rem); margin-bottom:.8rem;">hi, i draw the characters and shape the felt</h2>
+        <p>chickenduck started as a casual doodle in the margin of a notebook and expanded into framed prints, sticker sheets, and a shelf of needle-felted creatures. everything's made by hand in small batches with plenty of character.</p>
       </div>
     </div>
   </section>
 
-  <!-- ================= FOOTER CTA + SITE FOOTER ================= -->
   <section class="footer-cta">
     <div class="section-inner reveal">
       <h2>take one home</h2>
@@ -554,10 +1269,10 @@
     <p class="footer-copy">© 2026 chickenduck.art — doodled and felted by hand.</p>
     <div class="footer-social">
       <a href="#" aria-label="Instagram" title="Add your Instagram link">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="1[...]
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.3"/><circle cx="16.6" cy="7.4" r="0.6" fill="currentColor" stroke="none"/></svg>
       </a>
       <a href="mailto:hello@chickenduck.art" aria-label="Email">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.5" width="16" height="13" rx="2.2"/><path d="[...]
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.5" width="16" height="13" rx="2.2"/><path d="M4.5 6.5 12 12l7.5-5.5"/></svg>
       </a>
     </div>
   </footer>
@@ -565,7 +1280,6 @@
 </main>
 
 <script>
-  // Reveal-on-scroll — skipped for reduced-motion users, who see everything already in place.
   var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!prefersReduced && 'IntersectionObserver' in window) {
     var io = new IntersectionObserver(function(entries){
@@ -581,8 +1295,7 @@
     document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('is-visible'); });
   }
 
-  // Active nav state on scroll (desktop sections)
-  var sections = ['home','doodles','felted','about'].map(function(id){ return document.getElementById(id); });
+  var sections = ['home','doodles','stickers','felted','about'].map(function(id){ return document.getElementById(id); });
   var navLinks = document.querySelectorAll('.nav-link[href^="#"]');
   if ('IntersectionObserver' in window) {
     var navIo = new IntersectionObserver(function(entries){
