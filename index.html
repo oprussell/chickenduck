@@ -47,11 +47,12 @@
   --yarn:#9B7EDE;
   --shell:#FFB27B;
 
-  --font-display:'Splithigh',system-ui,sans-serif;
-  --font-body:'Seblak',system-ui,sans-serif;
+  --font-title:'Splithigh';
+  --font-body:'Seblak';
 
   --nav-w:88px;
   --nav-w-mobile:64px;
+
   --shadow-ink:5px 5px 0 var(--ink);
   --shadow-ink-sm:3px 3px 0 var(--ink);
 }
@@ -76,6 +77,11 @@ html{
   }
 }
 
+
+/* ============================================================
+   BASE TYPOGRAPHY
+   ============================================================ */
+
 body{
   margin:0;
   background:var(--cream);
@@ -85,9 +91,17 @@ body{
   line-height:1.5;
 }
 
-h1,h2,h3{
-  font-family:var(--font-display);
+/*
+  ALL TITLES / HEADINGS
+  Splithigh + uppercase
+*/
+
+h1,
+h2,
+h3{
+  font-family:var(--font-title);
   font-weight:400;
+  text-transform:uppercase;
   line-height:1.05;
   margin:0;
 }
@@ -111,20 +125,29 @@ a{
   left:0;
 }
 
-img,svg{
+img,
+svg{
   display:block;
   max-width:100%;
 }
+
+
+/* ============================================================
+   BODY / NON-TITLE TEXT
+   SEBLAK
+   ============================================================ */
 
 .eyebrow{
   display:inline-flex;
   align-items:center;
   gap:.5em;
+
   font-family:var(--font-body);
-  font-weight:700;
+  font-weight:400;
   font-size:.8rem;
   letter-spacing:.08em;
   text-transform:uppercase;
+
   color:var(--ink);
   opacity:.65;
   margin-bottom:.9rem;
@@ -148,15 +171,20 @@ img,svg{
   display:inline-flex;
   align-items:center;
   gap:.5rem;
+
   font-family:var(--font-body);
-  font-weight:700;
+  font-weight:400;
   font-size:1rem;
+
   padding:.85rem 1.5rem;
   border-radius:999px;
   border:2.5px solid var(--ink);
+
   text-decoration:none;
   cursor:pointer;
+
   box-shadow:var(--shadow-ink-sm);
+
   transition:
     transform .15s ease,
     box-shadow .15s ease,
@@ -201,13 +229,18 @@ img,svg{
   position:fixed;
   top:0;
   left:0;
+
   height:100vh;
   width:var(--nav-w);
+
   background:var(--ink);
+
   z-index:100;
+
   display:flex;
   flex-direction:column;
   align-items:center;
+
   padding:1.1rem 0 1.4rem;
 }
 
@@ -223,30 +256,39 @@ img,svg{
   list-style:none;
   margin:0;
   padding:0;
+
   display:flex;
   flex-direction:column;
   gap:.65rem;
+
   flex:1;
+
   align-items:center;
   justify-content:center;
 }
 
 .nav-link{
   position:relative;
+
   display:flex;
   align-items:center;
   justify-content:center;
+
   width:48px;
   height:48px;
+
   border-radius:16px;
+
   color:var(--cream);
   text-decoration:none;
+
   transition:transform .18s ease;
 }
 
 .nav-link svg{
   width:24px;
   height:24px;
+
   position:relative;
   z-index:2;
 }
@@ -254,12 +296,16 @@ img,svg{
 .nav-link .blob{
   position:absolute;
   inset:0;
+
   border-radius:16px;
+
   transform:scale(.85) rotate(0deg);
   opacity:0;
+
   transition:
     opacity .18s ease,
     transform .18s ease;
+
   box-shadow:3px 3px 0 var(--cream);
 }
 
@@ -298,23 +344,35 @@ img,svg{
 
 .nav-tooltip{
   position:absolute;
+
   left:64px;
   top:50%;
+
   transform:translateY(-50%) translateX(-6px);
+
   background:var(--cream);
   color:var(--ink);
-  font-weight:700;
+
+  font-family:var(--font-body);
+  font-weight:400;
   font-size:.82rem;
+
   padding:.4rem .7rem;
+
   border-radius:8px;
   white-space:nowrap;
+
   border:2px solid var(--ink);
+
   box-shadow:3px 3px 0 var(--ink);
+
   opacity:0;
   pointer-events:none;
+
   transition:
     opacity .15s ease,
     transform .15s ease;
+
   z-index:50;
 }
 
@@ -340,14 +398,19 @@ img,svg{
 
 .smoke-container{
   position:absolute;
-  top:0px;
+  top:0;
   left:62%;
+
   transform:translateX(-50%);
+
   width:16px;
   height:18px;
+
   pointer-events:none;
   z-index:10;
+
   opacity:0;
+
   transition:opacity 1s ease;
 }
 
@@ -358,8 +421,10 @@ img,svg{
 
 .smoke-puff{
   position:absolute;
+
   background:var(--cream);
   border-radius:50%;
+
   opacity:0;
   transform:scale(.3);
 }
@@ -369,6 +434,7 @@ img,svg{
   height:5px;
   bottom:0;
   left:5px;
+
   animation:spewSmoke 2s infinite ease-out;
 }
 
@@ -377,6 +443,7 @@ img,svg{
   height:7px;
   bottom:2px;
   left:4px;
+
   animation:spewSmoke 2s infinite ease-out .6s;
 }
 
@@ -385,6 +452,7 @@ img,svg{
   height:6px;
   bottom:3px;
   left:6px;
+
   animation:spewSmoke 2s infinite ease-out 1.2s;
 }
 
@@ -411,14 +479,20 @@ img,svg{
 
 .doodle-draw-container{
   position:absolute;
+
   top:22px;
   left:50%;
+
   transform:translateX(-50%);
+
   width:19px;
   height:10px;
+
   pointer-events:none;
   z-index:10;
+
   opacity:0;
+
   transition:opacity .2s ease;
 }
 
@@ -430,6 +504,7 @@ img,svg{
 .doodle-pencil-path path{
   stroke-dasharray:30;
   stroke-dashoffset:30;
+
   animation:drawLine 2s infinite linear;
 }
 
@@ -489,14 +564,6 @@ img,svg{
    NEEDLE FELTING ICON — NEEDLE WIGGLE
    ============================================================ */
 
-/*
-  The .needle class should be placed on the needle portion
-  of the needle-felting SVG.
-
-  This keeps the wool completely still while the needle
-  gently wobbles back and forth.
-*/
-
 .nav-list li:nth-child(4) .needle{
   transform-box:fill-box;
   transform-origin:50% 90%;
@@ -541,9 +608,12 @@ main{
 
 .blob-bg{
   position:absolute;
+
   border-radius:50%;
   opacity:.55;
+
   z-index:0;
+
   animation:float 9s ease-in-out infinite;
 }
 
@@ -559,29 +629,37 @@ main{
 
 .wiggle-zone{
   position:relative;
+
   border:2.5px dashed var(--ink);
   border-radius:22px;
+
   background:repeating-linear-gradient(
     135deg,
     rgba(42,38,34,.035) 0 10px,
     transparent 10px 20px
   );
+
   display:flex;
   align-items:center;
   justify-content:center;
+
   text-align:center;
 }
 
 .wiggle-zone .wiggle-label{
+  font-family:var(--font-body);
   font-size:.8rem;
-  font-weight:600;
+  font-weight:400;
+
   opacity:.5;
   font-style:italic;
+
   padding:0 1rem;
 }
 
 section{
   padding:5.5rem 1.5rem;
+
   position:relative;
   overflow:hidden;
 }
@@ -589,6 +667,7 @@ section{
 .section-inner{
   max-width:1080px;
   margin:0 auto;
+
   position:relative;
   z-index:1;
 }
@@ -604,6 +683,7 @@ section{
 }
 
 .section-head p{
+  font-family:var(--font-body);
   font-size:1.05rem;
   opacity:.8;
   margin:0;
@@ -621,7 +701,9 @@ section{
 .hero .blob-bg:nth-child(1){
   width:220px;
   height:220px;
+
   background:var(--yolk);
+
   top:8%;
   right:8%;
 }
@@ -629,9 +711,12 @@ section{
 .hero .blob-bg:nth-child(2){
   width:140px;
   height:140px;
+
   background:var(--pond);
+
   bottom:6%;
   left:2%;
+
   animation-delay:1.5s;
 }
 
@@ -642,17 +727,27 @@ section{
 
 .hero h1{
   font-size:clamp(4.5rem,11vw,8.5rem);
+
   display:block;
   width:100%;
+
   line-height:.9;
   text-align:left;
+
   margin-bottom:.5rem;
 }
 
+/*
+  CHICKENDUCK.ART
+  Splithigh + uppercase
+*/
+
 .hero h1 .c1{
   color:var(--comb);
+
   display:block;
   width:100%;
+
   text-align:left;
 }
 
@@ -667,23 +762,34 @@ section{
 }
 
 .hero h1 .ext{
-  font-family:var(--font-display);
+  font-family:var(--font-title);
   font-size:.38em;
   font-weight:400;
+  text-transform:uppercase;
   opacity:.7;
 }
 
 .hero-tagline{
-  font-family:var(--font-display);
-  font-weight:600;
+  /*
+    This is supporting copy, NOT a title.
+    Therefore: Seblak.
+  */
+  font-family:var(--font-body);
+  font-weight:400;
+
   font-size:clamp(1.3rem,2.4vw,1.8rem);
+
   margin:1.2rem 0 1.1rem;
 }
 
 .hero-copy{
+  font-family:var(--font-body);
   font-size:1.08rem;
+
   max-width:46ch;
+
   opacity:.85;
+
   margin-bottom:2rem;
 }
 
@@ -700,19 +806,27 @@ section{
 
 .product-grid{
   display:grid;
+
   grid-template-columns:repeat(3,1fr);
+
   gap:1.75rem;
 }
 
 .product-card{
   background:var(--paper);
+
   border:2.5px solid var(--ink);
   border-radius:20px;
+
   box-shadow:var(--shadow-ink);
+
   padding:1.1rem;
+
   display:flex;
   flex-direction:column;
+
   gap:.9rem;
+
   transition:
     transform .18s ease,
     box-shadow .18s ease;
@@ -730,11 +844,16 @@ section{
 
 .card-tag{
   align-self:flex-start;
+
+  font-family:var(--font-body);
   font-size:.72rem;
-  font-weight:800;
+  font-weight:400;
+
   letter-spacing:.04em;
   text-transform:uppercase;
+
   padding:.25rem .6rem;
+
   border-radius:999px;
   border:2px solid var(--ink);
 }
@@ -751,22 +870,34 @@ section{
   background:var(--pond);
 }
 
+
+/*
+  PRODUCT TITLES
+  Splithigh + uppercase
+*/
+
 .product-card h3{
-  font-family:var(--font-display);
+  font-family:var(--font-title);
   font-size:1.15rem;
+
   font-weight:400;
+  text-transform:uppercase;
+
   margin:0;
 }
 
 .card-foot{
   display:flex;
+
   align-items:center;
   justify-content:space-between;
+
   margin-top:auto;
 }
 
 .card-price{
-  font-weight:800;
+  font-family:var(--font-body);
+  font-weight:400;
   opacity:.75;
 }
 
@@ -782,7 +913,9 @@ section{
 .section-doodles .blob-bg:nth-child(3){
   width:170px;
   height:170px;
+
   background:var(--shell);
+
   top:0%;
   left:-4%;
 }
@@ -795,7 +928,9 @@ section{
 .section-stickers .blob-bg:nth-child(3){
   width:180px;
   height:180px;
+
   background:var(--yolk);
+
   top:10%;
   right:-2%;
 }
@@ -820,9 +955,12 @@ section{
 .section-felted .blob-bg:nth-child(3){
   width:190px;
   height:190px;
+
   background:var(--yarn);
+
   bottom:-3%;
   right:-3%;
+
   opacity:.4;
 }
 
@@ -849,8 +987,11 @@ section{
 
 .about-grid{
   display:grid;
+
   grid-template-columns:200px 1fr;
+
   gap:2.5rem;
+
   align-items:center;
 }
 
@@ -865,8 +1006,12 @@ section{
 }
 
 .about-copy p{
+  font-family:var(--font-body);
+
   font-size:1.05rem;
+
   opacity:.85;
+
   max-width:56ch;
 }
 
@@ -878,25 +1023,43 @@ section{
 .footer-cta{
   background:var(--ink);
   color:var(--cream);
+
   text-align:center;
 }
 
+/*
+  TAKE ONE HOME
+  Splithigh + uppercase
+*/
+
 .footer-cta h2{
+  font-family:var(--font-title);
+
   color:var(--cream);
+
   font-size:clamp(2.2rem,5vw,3.4rem);
+
+  text-transform:uppercase;
+
   margin-bottom:.7rem;
 }
 
 .footer-cta p{
+  font-family:var(--font-body);
+
   opacity:.75;
+
   max-width:44ch;
+
   margin:0 auto 2rem;
 }
 
 .footer-cta .btn-primary{
   background:var(--yolk);
   color:var(--ink);
+
   border-color:var(--cream);
+
   box-shadow:5px 5px 0 var(--cream);
 }
 
@@ -912,10 +1075,14 @@ section{
 .site-footer{
   background:var(--ink);
   color:var(--cream);
+
   padding:2.5rem 1.5rem 6.5rem;
+
   display:flex;
   flex-wrap:wrap;
+
   gap:1.25rem;
+
   align-items:center;
   justify-content:space-between;
 }
@@ -928,12 +1095,17 @@ section{
 .footer-social a{
   width:40px;
   height:40px;
+
   border-radius:50%;
+
   border:2px solid var(--cream);
+
   display:flex;
   align-items:center;
   justify-content:center;
+
   text-decoration:none;
+
   transition:
     background .15s ease,
     transform .15s ease;
@@ -950,6 +1122,8 @@ section{
 }
 
 .footer-copy{
+  font-family:var(--font-body);
+
   font-size:.85rem;
   opacity:.6;
 }
@@ -961,7 +1135,9 @@ section{
 
 .reveal{
   opacity:0;
+
   transform:translateY(18px);
+
   transition:
     opacity .6s ease,
     transform .6s ease;
@@ -1007,9 +1183,12 @@ section{
     top:auto;
     bottom:0;
     left:0;
+
     width:100%;
     height:var(--nav-w-mobile);
+
     flex-direction:row;
+
     padding:.5rem .75rem;
   }
 
@@ -1019,8 +1198,11 @@ section{
 
   .nav-list{
     flex-direction:row;
+
     width:100%;
+
     justify-content:space-around;
+
     gap:.25rem;
   }
 
@@ -1154,13 +1336,13 @@ section{
       <div class="hero-copy-col reveal">
         <p class="eyebrow">hand-doodled &amp; hand-felted</p>
         <h1>
-          <span class="c1">chicken</span>
+          <span class="c1">CHICKEN</span>
           <span class="duck-art-line">
-            <span class="c2">duck</span>
+            <span class="c2">DUCK</span>
             <span class="ext">.art</span>
           </span>
         </h1>
-        <p class="hero-tagline">wobbly doodles, stickers, and fuzzy little creatures.</p>
+        <p class="hero-tagline">fun stuff for fun people</p>
         <p class="hero-copy">I draw quirky little characters and turn them into framed prints and stickers, alongside a growing shelf of needle-felted monsters, eyeballs, and tiny snails you can hold.</p>
         <div class="hero-ctas">
           <a href="#doodles" class="btn btn-primary">see the doodles</a>
